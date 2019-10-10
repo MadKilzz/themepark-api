@@ -1,0 +1,20 @@
+{
+  "name": "themepark-api",
+  "version": "1.0.0",
+  "description": "Offical package of themepark for sbdplugins",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "themepark",
+    "themeparkplus",
+    "themeparkextended"
+  ],
+  "author": "YounesTheDead™",
+  "license": "ISC",
+  "dependencies": {
+    "minecraft-api": "0.0.2",
+    "mysql": "^2.17.1"
+  }
+}
