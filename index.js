@@ -158,7 +158,7 @@ var getrCounts = function (sql, options, callback) {
                     return console.log(err)
                 }
                 if (!row.length) {
-                    let err = new Error(red + `Table: `+ yellow + `ridecount` + red + ` is empty!` + reset);
+                    let err = new Error(red + `Find error: can not find `+ yellow + `${username}` + red + ` in the database!` + reset);
                     return console.error(err.message);
                 }
                 output_row = row[0].total;
@@ -176,7 +176,7 @@ var getrCounts = function (sql, options, callback) {
                 return console.log(err)
             }
             if (!row.length) {
-                let err = new Error(red + `Table: `+ yellow + `ridecount` + red + ` is empty!` + reset);
+                let err = new Error(red + `rideId: `+ yellow + `${rideID}` + red + ` doesn't exist` + reset);
                 return console.error(err.message);
             }
             output_row = row[0].total;
