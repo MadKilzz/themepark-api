@@ -6,6 +6,7 @@ let red = "\x1b[31m";
 const mysql = require("mysql");
 const tools = require("./functions/tools");
 
+
 var login = function (options) {
 
     let host = options && options.host;
@@ -15,7 +16,7 @@ var login = function (options) {
 
     if (!host || !user || !database) {
         let err = new Error(red + `You have not specified a host user or database` + reset);
-        return console.error(err.message);
+        throw err.message;
     }
 
     var sql = mysql.createConnection({
@@ -38,7 +39,7 @@ var getRide = function (sql, rideid, callback) {
     let outputJson = {
         id: null,
         name: null,
-        region_id: null, 
+        region_id: null,
         region_name: null,
         status: null,
         status_name: null,
@@ -89,7 +90,7 @@ var getRide = function (sql, rideid, callback) {
                 outputJson = {
                     id: attraction[0].id,
                     name: attraction[0].name,
-                    region_id: attraction[0].region_id, 
+                    region_id: attraction[0].region_id,
                     region_name: regionName,
                     status: attraction[0].status,
                     status_name: statusName,
@@ -99,7 +100,7 @@ var getRide = function (sql, rideid, callback) {
             });
         });
     });
-    
+
 }
 
 var getRides = function (sql, callback) {
@@ -119,7 +120,7 @@ var getRides = function (sql, callback) {
         output_row = row;
         callback(output_row)
     });
-    
+
 }
 
 var getrCounts = function (sql, options, callback) {
@@ -165,7 +166,7 @@ var getrCounts = function (sql, options, callback) {
                 callback(output_row)
             });
         });
-        
+
     } else if(rideID && !username) {
         sql.query(`SELECT SUM(count) AS total FROM ridecount WHERE attractionId='${rideID}'`, function (err, row) {
             if (err) {
@@ -188,10 +189,38 @@ var getrCounts = function (sql, options, callback) {
     }
 }
 
+var getStatus = function (sql, statusid, callback) {
+    let output_row = "";
+    sql.query(`SELECT * FROM statuss WHERE statusId = "${statusid}"`, function (err, status) {
+        if (err) {
+            if (err.code === 'ER_NO_SUCH_TABLE') {
+                let err = new Error(red + `Table: `+ yellow + `status` + red + ` doesn't exist` + reset);
+                return console.error(err.message);
+            }
+            return console.log(err)
+        }
+        if (!status.length) {
+            let err = new Error(red + `Status: `+ yellow + `${statusid}` + red + ` doesn't exist` + reset);
+            return console.error(err.message);
+        }
+
+        let statusName = tools.removeRegex(status[0].statusName);
+
+        let outputJson = {
+            status: status[0].statusId,
+            status_name: statusName,
+        }
+        output_row = outputJson;
+        callback(output_row)
+    });
+}
+
+
 // export usage items
 module.exports = {
     getRide:    getRide,
     getRides:   getRides,
     getrCounts: getrCounts,
+    getStatus:  getStatus,
     login:      login
 }

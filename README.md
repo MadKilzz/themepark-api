@@ -20,7 +20,7 @@ themepark.getRide(tpconfig, "RideID", function (data) {
     console.log(data);
 });
 ```
-Example output: 
+Example output:
 ```javascript
 { id: 'ff',
   name: 'free fall',
@@ -31,13 +31,13 @@ Example output:
 ```
 
 **Get ridecounts out the db**
-The functions have options 
+The functions have options
 ```javascript
-themepark.getrCounts(tpconfig, {username: "username", rideId: "rideId"}, function(data) {
+themepark.getRides(tpconfig, function (data){
     console.log(data)
 })
 ```
-Example output: 
+Example output:
 
 ```javascript
 [ RowDataPacket {
@@ -75,8 +75,25 @@ themepark.getrCounts(tpconfig, {username: "mcusername", rideId: "rideID"}, funct
     console.log(data)
 })
 ```
-Example output: 
+Example output:
 
 ```javascript
 4
+```
+**Get the status names out the db**
+
+The Regex in the status names is removed you can only get the text
+
+Example:
+
+```javascript
+themepark.getStatus(tpconfig, "STATUSID", function(data) {
+    console.log(data)
+})
+```
+
+Example output:
+
+```javascript
+{ status: 'CLOSED', status_name: 'Gesloten' }
 ```
