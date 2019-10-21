@@ -1,11 +1,18 @@
+# ThemePark API
+
+With this API, you can easily read things out of the MYSQL database connected to the ThemePark plugin for Spigot servers.
+
 ## Installation
-```javascript
+
+```bash
 npm install themepark-api
 ```
-**You need to get a login fuction to use the db**
 
-Example:
+**Connecting with the database:**
 
+Before you can use it, you have to connect to your database (the same as who is connected to the ThemePark plugin).
+
+*For example:*
 ```javascript
 const themepark = require("themepark-api");
 
@@ -13,87 +20,87 @@ let tpconfig = themepark.login({host: "DBHOST", username: "DBUSER", password: "D
 
 ```
 
-## Getting started
-**Get one ride out the db**
+## Usage
+
+### Ride information:
+
+#### One ride:
+
 ```javascript
-themepark.getRide(tpconfig, "RideID", function (data) {
+themepark.getRide(tpconfig, "AttractionID", function (data) {
     console.log(data);
 });
 ```
-Example output:
+*Example output:*
 ```javascript
-{ id: 'ff',
-  name: 'free fall',
-  region_id: 'flatride',
-  region_name: 'Flatrides',
-  status: 'CLOSED',
-  status_name: 'Gesloten' }
+{ 
+   id:'ff',
+   name:'free fall',
+   region_id:'flatride',
+   region_name:'Flatrides',
+   status:'CLOSED',
+   status_name:'Gesloten'
+}
 ```
 
-**Get ridecounts out the db**
-The functions have options
+#### All the rides:
+
 ```javascript
-themepark.getRides(tpconfig, function (data){
+themepark.getRides(tpconfig, function (data) {
     console.log(data)
-})
+});
 ```
-Example output:
+*Example output:*
 
 ```javascript
 [ RowDataPacket {
-    id: 'ff',
-    name: 'free fall',
-    region_id: 'flatride',
-    type: 'RIDE',
-    status: 'CLOSED' },
-  RowDataPacket {
-    id: 'test',
-    name: 'test',
-    region_id: 'test',
-    type: 'test',
-    status: 'OPEN' } ]
+   id:'ff',
+   name:'free fall',
+   region_id:'flatride',
+   type:'RIDE',
+   status:'CLOSED'
+}, RowDataPacket {
+   id:'test',
+   name:'test',
+   region_id:'test',
+   type:'test',
+   status:'OPEN'
+}]
 ```
 
-**Get all the rides out the db**
+### Ridecounts:
 
-You can also only specify a username that is the same with a rideId.
+You can add multiple optional options to this function.
 
-**Only a username:** Gives a output of the rides count total of the user
+* **username:** Your Minecraft name
 
-**Only a rideId:** Gives a output of the ride count for all the players
+* **rideId:** The rideID of the ride in the server
 
-**Username and rideId** Gives the count of a ride for a user
-
-**Options:**
-
-**• username**: Your mc username
-
-**• rideId**: The rideID of the ride in the server
 
 ```javascript
 themepark.getrCounts(tpconfig, {username: "mcusername", rideId: "rideID"}, function(data) {
     console.log(data)
-})
+});
 ```
-Example output:
+*Example output:*
 
 ```javascript
 4
 ```
-**Get the status names out the db**
 
-The Regex in the status names is removed you can only get the text
-
-Example:
+### Status names:
 
 ```javascript
 themepark.getStatus(tpconfig, "STATUSID", function(data) {
     console.log(data)
-})
+});
 ```
 
-Example output:
+*Example output:*
 
 ```javascript
-{ status: 'CLOSED', status_name: 'Gesloten' }
+{
+   status:'CLOSED',
+   status_name:'Gesloten'
+}
 ```
