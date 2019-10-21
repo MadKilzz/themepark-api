@@ -68,7 +68,7 @@ themepark.getRides(tpconfig, function (data) {
 }]
 ```
 
-## Ridecounts:
+### Ridecounts:
 
 You can add multiple optional options to this function.
 
@@ -88,7 +88,7 @@ themepark.getrCounts(tpconfig, {username: "mcusername", rideId: "rideID"}, funct
 4
 ```
 
-## Status names:
+### Status names:
 
 ```javascript
 themepark.getStatus(tpconfig, "STATUSID", function(data) {
