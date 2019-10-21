@@ -1,7 +1,7 @@
 {
   "name": "themepark-api",
   "version": "1.0.0",
-  "description": "Offical package of themepark for sbdplugins",
+  "description": "Official package of themepark for sbdplugins",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
