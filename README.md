@@ -2,6 +2,16 @@
 
 With this API, you can easily read things out of the MYSQL database connected to the ThemePark plugin for Spigot servers.
 
+## Todo List:
+
+- [x] Prepared statements
+- [x] Get ridecount in getRide function and the count of today
+- [x] Updated getrCount to getRideCounts
+- [ ] Use join in querys
+- [ ] Cleaning code
+- [ ] Get regions
+- [ ] Get shows
+
 ## Installation
 
 ```bash
@@ -33,13 +43,14 @@ themepark.getRide(tpconfig, "AttractionID", function (data) {
 ```
 *Example output:*
 ```javascript
-{ 
-   id:'ff',
-   name:'free fall',
-   region_id:'flatride',
-   region_name:'Flatrides',
-   status:'CLOSED',
-   status_name:'Gesloten'
+{ id: 'lumberjack',
+  name: 'free fall',
+  region_id: 'flatride',
+  region_name: 'Flatrides',
+  status: 'CLOSED',
+  status_name: 'Gesloten',
+  count_today: 13,
+  count: 17
 }
 ```
 
@@ -70,6 +81,8 @@ themepark.getRides(tpconfig, function (data) {
 
 ### Ridecounts:
 
+**This function name is changed to getRideCounts in v1.0.3!**
+
 You can add multiple optional options to this function.
 
 * **username:** Your Minecraft name
@@ -78,7 +91,7 @@ You can add multiple optional options to this function.
 
 
 ```javascript
-themepark.getrCounts(tpconfig, {username: "mcusername", rideId: "rideID"}, function(data) {
+themepark.getRideCounts(tpconfig, {username: "mcusername", rideId: "rideID"}, function(data) {
     console.log(data)
 });
 ```

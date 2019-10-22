@@ -1,7 +1,7 @@
 {
   "name": "themepark-api",
-  "version": "1.0.0",
-  "description": "Offical package of themepark for sbdplugins",
+  "version": "1.0.3",
+  "description": "Official package of themepark for sbdplugins",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -13,8 +13,14 @@
   ],
   "author": "YounesTheDead™",
   "license": "ISC",
+  "homepage": "https://github.com/MadKilzz/themepark-api",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MadKilzz/themepark-api.git"
+  },
   "dependencies": {
     "minecraft-api": "0.0.2",
+    "moment": "^2.24.0",
     "mysql": "^2.17.1"
   }
 }

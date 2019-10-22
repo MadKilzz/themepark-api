@@ -1,13 +1,11 @@
-let reset = "\x1b[0m";
-
-let yellow = "\x1b[33m";
-let red = "\x1b[31m";
+let reset   = "\x1b[0m";
+let yellow  = "\x1b[33m";
+let red     = "\x1b[31m";
 
 const mysql = require("mysql");
 const tools = require("./functions/tools");
 
-
-var login = function (options) {
+function login(options) {
 
     let host = options && options.host;
     let user = options && options.username;
@@ -34,7 +32,7 @@ var login = function (options) {
     return sql;
 }
 
-var getRide = function (sql, rideid, callback) {
+function getRide(sql, rideid, callback) {
     let attraction_row = "";
     let outputJson = {
         id: null,
@@ -43,8 +41,10 @@ var getRide = function (sql, rideid, callback) {
         region_name: null,
         status: null,
         status_name: null,
+        count_today: null,
+        count: null
     }
-    sql.query(`SELECT * FROM attraction WHERE id = "${rideid}"`, function (err, attraction) {
+    sql.query(`SELECT * FROM attraction WHERE id = ?`, [rideid], function (err, attraction) {
         if (err) {
             if (err.code === 'ER_NO_SUCH_TABLE') {
                 let err = new Error(red + `Table: `+ yellow + `attraction` + red + ` doesn't exist` + reset);
@@ -57,7 +57,7 @@ var getRide = function (sql, rideid, callback) {
             return console.error(err.message);
         }
 
-        sql.query(`SELECT * FROM region WHERE id = "${attraction[0].region_id}"`, function (err, region) {
+        sql.query(`SELECT * FROM region WHERE id = ?`, [attraction[0].region_id], function (err, region) {
             if (err) {
                 if (err.code === 'ER_NO_SUCH_TABLE') {
                     let err = new Error(red + `Table: `+ yellow + `region` + red + ` doesn't exist` + reset);
@@ -72,7 +72,7 @@ var getRide = function (sql, rideid, callback) {
 
             let regionName = tools.removeRegex(region[0].name);
 
-            sql.query(`SELECT * FROM status WHERE statusId = "${attraction[0].status}"`, function (err, status) {
+            sql.query(`SELECT * FROM status WHERE statusId = ?`, [attraction[0].status], function (err, status) {
                 if (err) {
                     if (err.code === 'ER_NO_SUCH_TABLE') {
                         let err = new Error(red + `Table: `+ yellow + `status` + red + ` doesn't exist` + reset);
@@ -87,23 +87,53 @@ var getRide = function (sql, rideid, callback) {
 
                 let statusName = tools.removeRegex(status[0].statusName);
 
-                outputJson = {
-                    id: attraction[0].id,
-                    name: attraction[0].name,
-                    region_id: attraction[0].region_id,
-                    region_name: regionName,
-                    status: attraction[0].status,
-                    status_name: statusName,
-                }
-                attraction_row = outputJson;
-                callback(attraction_row)
+                sql.query(`SELECT SUM(count) AS total FROM ridecount WHERE attractionId= ?`, [rideid], function (err, count) {
+                    if (err) {
+                        if (err.code === 'ER_NO_SUCH_TABLE') {
+                            let err = new Error(red + `Table: `+ yellow + `ridecount` + red + ` doesn't exist` + reset);
+                            return console.error(err.message);
+                        }
+                        return console.log(err)
+                    }
+                    if (!count.length) {
+                        let err = new Error(red + `rideId: `+ yellow + `${rideid}` + red + ` doesn't exist` + reset);
+                        return console.error(err.message);
+                    }
+
+                    sql.query(`SELECT SUM(count) AS total FROM ridecount WHERE attractionId= ? AND date = ? `, [rideid, tools.getDay()], function (err, count_today) {
+                        if (err) {
+                            if (err.code === 'ER_NO_SUCH_TABLE') {
+                                let err = new Error(red + `Table: `+ yellow + `ridecount` + red + ` doesn't exist` + reset);
+                                return console.error(err.message);
+                            }
+                            return console.log(err)
+                        }
+                        if (!count.length) {
+                            let err = new Error(red + `rideId: `+ yellow + `${rideid}` + red + ` doesn't exist` + reset);
+                            return console.error(err.message);
+                        }
+
+                      outputJson = {
+                          id: attraction[0].id,
+                          name: attraction[0].name,
+                          region_id: attraction[0].region_id,
+                          region_name: regionName,
+                          status: attraction[0].status,
+                          status_name: statusName,
+                          count_today: count_today[0].total || 0,
+                          count: count[0].total
+                      }
+                      attraction_row = outputJson;
+                      callback(attraction_row)
+                    });
+                });
             });
         });
     });
 
 }
 
-var getRides = function (sql, callback) {
+function getRides(sql, callback) {
     let output_row = "";
     sql.query(`SELECT * FROM attraction`, function (err, row) {
         if (err) {
@@ -123,7 +153,7 @@ var getRides = function (sql, callback) {
 
 }
 
-var getrCounts = function (sql, options, callback) {
+function getRideCounts(sql, options, callback) {
     let output_row = "";
     let username = options && options.username;
     let rideID = options && options.rideId;
@@ -132,7 +162,7 @@ var getrCounts = function (sql, options, callback) {
         return console.error(err.message);
     } else if (username && rideID) {
         tools.getuuid(username).then(uuid => {
-            sql.query(`SELECT SUM(count) AS total FROM ridecount WHERE uuid='${uuid}' AND attractionId='${rideID}'`, function (err, row) {
+            sql.query(`SELECT SUM(count) AS total FROM ridecount WHERE uuid= ? AND attractionId= ?`, [uuid, rideID], function (err, row) {
                 if (err) {
                     if (err.code === 'ER_NO_SUCH_TABLE') {
                         let err = new Error(red + `Table: `+ yellow + `ridecount` + red + ` doesn't exist` + reset);
@@ -150,7 +180,7 @@ var getrCounts = function (sql, options, callback) {
         });
     } else if (username && !rideID){
         tools.getuuid(username).then(uuid => {
-            sql.query(`SELECT SUM(count) AS total FROM ridecount WHERE uuid='${uuid}'`, function (err, row) {
+            sql.query(`SELECT SUM(count) AS total FROM ridecount WHERE uuid= ?`, [uuid], function (err, row) {
                 if (err) {
                     if (err.code === 'ER_NO_SUCH_TABLE') {
                         let err = new Error(red + `Table: `+ yellow + `ridecount` + red + ` doesn't exist` + reset);
@@ -168,7 +198,7 @@ var getrCounts = function (sql, options, callback) {
         });
 
     } else if(rideID && !username) {
-        sql.query(`SELECT SUM(count) AS total FROM ridecount WHERE attractionId='${rideID}'`, function (err, row) {
+        sql.query(`SELECT SUM(count) AS total FROM ridecount WHERE attractionId= ?`, [rideID], function (err, row) {
             if (err) {
                 if (err.code === 'ER_NO_SUCH_TABLE') {
                     let err = new Error(red + `Table: `+ yellow + `ridecount` + red + ` doesn't exist` + reset);
@@ -189,9 +219,9 @@ var getrCounts = function (sql, options, callback) {
     }
 }
 
-var getStatus = function (sql, statusid, callback) {
+function getStatus(sql, statusid, callback) {
     let output_row = "";
-    sql.query(`SELECT * FROM statuss WHERE statusId = "${statusid}"`, function (err, status) {
+    sql.query(`SELECT * FROM status WHERE statusId = ?`, [statusid], function (err, status) {
         if (err) {
             if (err.code === 'ER_NO_SUCH_TABLE') {
                 let err = new Error(red + `Table: `+ yellow + `status` + red + ` doesn't exist` + reset);
@@ -215,12 +245,5 @@ var getStatus = function (sql, statusid, callback) {
     });
 }
 
-
 // export usage items
-module.exports = {
-    getRide:    getRide,
-    getRides:   getRides,
-    getrCounts: getrCounts,
-    getStatus:  getStatus,
-    login:      login
-}
+module.exports = { getRide, getRides, getRideCounts, getStatus, login }

@@ -1,8 +1,5 @@
-const MinecraftAPI = require('minecraft-api');
-let reset = "\x1b[0m";
-
-let yellow = "\x1b[33m";
-let red = "\x1b[31m";
+const MinecraftAPI  = require('minecraft-api');
+const moment        = require('moment');
 
 function getNormalUUID(uuid) {
     if (typeof uuid == 'string') {
@@ -17,10 +14,15 @@ module.exports.removeRegex = function (message) {
 
 module.exports.getuuid = async function (username) {
     try{
-        const uuid = await MinecraftAPI.uuidForName(username); 
+        const uuid = await MinecraftAPI.uuidForName(username);
         return getNormalUUID(uuid);
     } catch(err){
         let error = new Error(red + `Username: `+ yellow + `${username}` + red + ` doesn't exist` + reset);
         return console.error(error.message);
     }
 };
+
+module.exports.getDay = function() {
+  let date = moment().format("DD-MM-YYYY");
+  return date;
+}
