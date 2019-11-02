@@ -8,9 +8,9 @@ With this API, you can easily read things out of the MYSQL database connected to
 - [x] Get ridecount in getRide function and the count of today
 - [x] Updated getrCount to getRideCounts
 - [ ] Use join in querys
-- [ ] Cleaning code
-- [ ] Get regions
-- [ ] Get shows
+- [x] Cleaning code
+- [x] Get regions
+- [x] Get shows
 
 ## Installation
 
@@ -24,9 +24,9 @@ Before you can use it, you have to connect to your database (the same as who is 
 
 *For example:*
 ```javascript
-const themepark = require("themepark-api");
+const tpAPI = require("themepark-api");
 
-let tpconfig = themepark.login({host: "DBHOST", username: "DBUSER", password: "DBPASSWORD", database: "DBNAME"});
+let tp = new tpAPI({host: "DBHOST", username: "DBUSER", password: "DBPASSWORD", database: "DBNAME"})
 
 ```
 
@@ -37,7 +37,7 @@ let tpconfig = themepark.login({host: "DBHOST", username: "DBUSER", password: "D
 #### One ride:
 
 ```javascript
-themepark.getRide(tpconfig, "AttractionID", function (data) {
+tp.getRide("AttractionID", function (data) {
     console.log(data);
 });
 ```
@@ -57,7 +57,7 @@ themepark.getRide(tpconfig, "AttractionID", function (data) {
 #### All the rides:
 
 ```javascript
-themepark.getRides(tpconfig, function (data) {
+tp.getRides(function (data) {
     console.log(data)
 });
 ```
@@ -91,7 +91,7 @@ You can add multiple optional options to this function.
 
 
 ```javascript
-themepark.getRideCounts(tpconfig, {username: "mcusername", rideId: "rideID"}, function(data) {
+tp.getRideCounts({username: "mcusername", rideId: "rideID"}, function(data) {
     console.log(data)
 });
 ```
@@ -104,7 +104,7 @@ themepark.getRideCounts(tpconfig, {username: "mcusername", rideId: "rideID"}, fu
 ### Status names:
 
 ```javascript
-themepark.getStatus(tpconfig, "STATUSID", function(data) {
+tp.getStatus("StatusID", function(data) {
     console.log(data)
 });
 ```
@@ -115,5 +115,46 @@ themepark.getStatus(tpconfig, "STATUSID", function(data) {
 {
    status:'CLOSED',
    status_name:'Gesloten'
+}
+```
+
+### Region names:
+
+```javascript
+tp.getRegion("RegionID", function(data) {
+    console.log(data)
+});
+```
+
+*Example output:*
+
+```javascript
+{
+  region: 'flatride',
+  region_name: 'Flatrides'
+}
+```
+
+### Shows:
+
+```javascript
+tp.getShow("ShowID", function (data) {
+    console.log(data);
+});
+```
+
+*Example output:*
+
+```javascript
+{
+  showId: 'testid',
+  showName: 'testname',
+  showDescription: 'test desc',
+  showPrice: '€1,20',
+  vaultPrice: '1.20',
+  showImage: '{URL}',
+  showSeats: 20,
+  buyedSeats: 2,
+  showDate: '13:21 02-11-19'
 }
 ```

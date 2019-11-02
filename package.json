@@ -1,6 +1,6 @@
 {
   "name": "themepark-api",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Official package of themepark for sbdplugins",
   "main": "index.js",
   "scripts": {
