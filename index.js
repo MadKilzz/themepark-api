@@ -312,4 +312,9 @@ class Themepark {
 
 }
 
-module.exports = Themepark;
+module.exports = exports = Themepark;
+exports.getNormalUUID = tools.getNormalUUID;
+exports.removeRegex = tools.removeRegex;
+exports.getuuid = tools.getuuid;
+exports.getDay = tools.getDay;
+
